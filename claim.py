@@ -60,7 +60,25 @@ try:
             
             print("🔗 pixai.art login sayfasına gidiliyor...")
             driver.get("https://pixai.art/login")
-            time.sleep(5)
+            
+            # Sayfanın tamamen yüklenmesini bekle
+            print("⏳ Sayfa yükleniyor...")
+            time.sleep(10)
+            
+            # DEBUG: HTML'i kaydet
+            page_source = driver.page_source
+            print(f"📄 Sayfa başarıyla yüklendi ({len(page_source)} byte)")
+            
+            # Tüm input'ları listele
+            print("🔍 Input alanlarını taranıyor...")
+            all_inputs = driver.find_elements(By.TAG_NAME, "input")
+            print(f"   Toplam {len(all_inputs)} input bulundu:")
+            for i, inp in enumerate(all_inputs):
+                input_id = inp.get_attribute("id")
+                input_name = inp.get_attribute("name")
+                input_type = inp.get_attribute("type")
+                input_placeholder = inp.get_attribute("placeholder")
+                print(f"   [{i}] ID:{input_id} | Name:{input_name} | Type:{input_type} | Placeholder:{input_placeholder}")
             
             # 1️⃣ POPUP/MODAL KAPATMA
             print("🔘 Popup kontrol ediliyor...")
@@ -90,23 +108,91 @@ try:
             
             time.sleep(2)
             
-            # 2️⃣ EMAIL GİRİŞİ
+            # 2️⃣ EMAIL GİRİŞİ - Farklı seçenekler dene
             print("📝 Email giriliyör...")
-            email_input = WebDriverWait(driver, 10).until(
-                EC.presence_of_element_located((By.ID, "email-input"))
-            )
-            email_input.clear()
-            email_input.send_keys(EMAIL)
-            time.sleep(1)
+            email_input = None
             
-            # 3️⃣ PASSWORD GİRİŞİ
+            # Seçenek 1: ID ile
+            try:
+                email_input = WebDriverWait(driver, 3).until(
+                    EC.presence_of_element_located((By.ID, "email-input"))
+                )
+                print("   ✓ Email bulundu: ID='email-input'")
+            except:
+                print("   ✗ ID='email-input' bulunamadı, alternatif yöntemler deneniyor...")
+                
+                # Seçenek 2: Type email olan input
+                try:
+                    email_input = WebDriverWait(driver, 3).until(
+                        EC.presence_of_element_located((By.CSS_SELECTOR, "input[type='email']"))
+                    )
+                    print("   ✓ Email bulundu: input[type='email']")
+                except:
+                    print("   ✗ input[type='email'] bulunamadı")
+                    
+                    # Seçenek 3: Name='email' olan input
+                    try:
+                        email_input = WebDriverWait(driver, 3).until(
+                            EC.presence_of_element_located((By.NAME, "email"))
+                        )
+                        print("   ✓ Email bulundu: input[name='email']")
+                    except:
+                        print("   ✗ input[name='email'] bulunamadı, ilk input'u kullan")
+                        # Seçenek 4: İlk input
+                        if all_inputs:
+                            email_input = all_inputs[0]
+                            print(f"   ✓ İlk input kullanılıyor")
+            
+            if email_input:
+                email_input.clear()
+                email_input.send_keys(EMAIL)
+                print("   ✅ Email girildi")
+                time.sleep(1)
+            else:
+                raise Exception("Email input bulunamadı!")
+            
+            # 3️⃣ PASSWORD GİRİŞİ - Farklı seçenekler dene
             print("🔐 Şifre giriliyör...")
-            password_input = WebDriverWait(driver, 10).until(
-                EC.presence_of_element_located((By.ID, "password-input"))
-            )
-            password_input.clear()
-            password_input.send_keys(PASSWORD)
-            time.sleep(1)
+            password_input = None
+            
+            # Seçenek 1: ID ile
+            try:
+                password_input = WebDriverWait(driver, 3).until(
+                    EC.presence_of_element_located((By.ID, "password-input"))
+                )
+                print("   ✓ Şifre bulundu: ID='password-input'")
+            except:
+                print("   ✗ ID='password-input' bulunamadı, alternatif yöntemler deneniyor...")
+                
+                # Seçenek 2: Type password olan input
+                try:
+                    password_input = WebDriverWait(driver, 3).until(
+                        EC.presence_of_element_located((By.CSS_SELECTOR, "input[type='password']"))
+                    )
+                    print("   ✓ Şifre bulundu: input[type='password']")
+                except:
+                    print("   ✗ input[type='password'] bulunamadı")
+                    
+                    # Seçenek 3: Name='password' olan input
+                    try:
+                        password_input = WebDriverWait(driver, 3).until(
+                            EC.presence_of_element_located((By.NAME, "password"))
+                        )
+                        print("   ✓ Şifre bulundu: input[name='password']")
+                    except:
+                        print("   ✗ input[name='password'] bulunamadı, ikinci input'u kullan")
+                        # Seçenek 4: İkinci input
+                        if len(all_inputs) > 1:
+                            password_input = all_inputs[1]
+                            print(f"   ✓ İkinci input kullanılıyor")
+            
+            if password_input:
+                password_input.clear()
+                password_input.send_keys(PASSWORD)
+                print("   ✅ Şifre girildi")
+                time.sleep(1)
+            else:
+                raise Exception("Password input bulunamadı!")
             
             # 4️⃣ LOGIN BUTONU
             print("✅ Login yapılıyor...")
