@@ -21,9 +21,6 @@ jobs:
       - name: Set up Chrome
         uses: browser-actions/setup-chrome@latest
 
-      - name: Set up ChromeDriver
-        uses: nanasess/setup-chromedriver@master
-
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
