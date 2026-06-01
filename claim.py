@@ -7,6 +7,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
 
 # Ortam değişkenlerinden credentials al
 EMAIL = os.getenv('PIXAI_EMAIL')
@@ -24,6 +25,7 @@ chrome_options.add_argument("--headless=new")  # Yeni headless mode
 chrome_options.add_argument("--no-sandbox")
 chrome_options.add_argument("--disable-dev-shm-usage")
 chrome_options.add_argument("--disable-gpu")
+chrome_options.add_argument("--disable-software-rasterizer")
 chrome_options.add_argument("--window-size=1920,1080")
 chrome_options.add_argument("--disable-extensions")
 chrome_options.add_argument("--disable-blink-features=AutomationControlled")
@@ -35,7 +37,7 @@ driver = None
 try:
     # Tarayıcıyı başlat
     print("🌐 Chrome başlatılıyor...")
-    service = Service()
+    service = Service(ChromeDriverManager().install())
     driver = webdriver.Chrome(service=service, options=chrome_options)
     
     # Driver timeout ayarları
