@@ -2,9 +2,7 @@ name: Daily Pixai Claim
 
 on:
   schedule:
-    # Her gün 06:00 UTC (Türkiye'de 09:00 - Yazlık saat) çalış
     - cron: '0 6 * * *'
-  # Manual olarak çalıştırmak için
   workflow_dispatch:
 
 jobs:
@@ -22,6 +20,9 @@ jobs:
 
       - name: Set up Chrome
         uses: browser-actions/setup-chrome@latest
+
+      - name: Set up ChromeDriver
+        uses: nanasess/setup-chromedriver@master
 
       - name: Install dependencies
         run: |
