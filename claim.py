@@ -22,14 +22,21 @@ print(f"📧 Email: {EMAIL}")
 # Chrome seçenekleri
 chrome_options = Options()
 chrome_options.add_argument("--headless=new")  # Yeni headless mode
-chrome_options.add_argument("--no-sandbox")
-chrome_options.add_argument("--disable-dev-shm-usage")
-chrome_options.add_argument("--disable-gpu")
+chrome_options.add_argument("--no-sandbox")  # CI ortamında gerekli
+chrome_options.add_argument("--disable-dev-shm-usage")  # Bellek sorunlarını önle
+chrome_options.add_argument("--disable-gpu")  # GPU desteğini kapat
 chrome_options.add_argument("--disable-software-rasterizer")
 chrome_options.add_argument("--window-size=1920,1080")
 chrome_options.add_argument("--disable-extensions")
 chrome_options.add_argument("--disable-blink-features=AutomationControlled")
 chrome_options.add_argument("--lang=en")
+chrome_options.add_argument("--single-process")  # CI için
+chrome_options.add_argument("--disable-background-networking")
+chrome_options.add_argument("--disable-breakpad")
+chrome_options.add_argument("--disable-client-side-phishing-detection")
+chrome_options.add_argument("--disable-default-apps")
+chrome_options.add_argument("--disable-device-discovery-notifications")
+chrome_options.add_argument("--disable-sync")
 chrome_options.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36")
 
 driver = None
